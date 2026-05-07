@@ -30,6 +30,15 @@ return {
                 filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
             })
 
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if client and client:supports_method("textDocument/inlayHint") then
+                        vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+                    end
+                end,
+            })
+
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
             vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
             vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "References" })
